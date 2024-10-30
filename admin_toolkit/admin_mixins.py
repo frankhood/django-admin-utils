@@ -326,7 +326,9 @@ class BaseAdminMixin(object):
             related_name = related_manager.field.name
         related_model = related_manager.model
         if show_generic_link:
-            url = "{}?{}__id__exact={}".format(related_model.admin_changelist_url(), related_name, obj.pk)
+            url = "{}?{}__id__exact={}".format(
+                related_model.admin_changelist_url(), related_name, obj.pk
+            )
             elements_count = related_manager.count()
             return '<a href="{url}" target="_blank">Display {elements_count} {label}</a>' "".format(
                 url=url, elements_count=elements_count, label=label
