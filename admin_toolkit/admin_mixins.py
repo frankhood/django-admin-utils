@@ -160,13 +160,9 @@ class ImprovedRawIdFieldsAdminMixin(object):  # admin.ModelAdmin
             kwargs.pop("request", None)
             type = db_field.remote_field.__class__.__name__
             if type == "ManyToOneRel":
-                kwargs["widget"] = VerboseForeignKeyRawIdWidget(
-                    db_field.remote_field, site
-                )
+                kwargs["widget"] = VerboseForeignKeyRawIdWidget(db_field.remote_field, site)
             elif type == "ManyToManyRel":
-                kwargs["widget"] = VerboseManyToManyRawIdWidget(
-                    db_field.remote_field, site
-                )
+                kwargs["widget"] = VerboseManyToManyRawIdWidget(db_field.remote_field, site)
             return db_field.formfield(**kwargs)
         return super().formfield_for_dbfield(db_field, **kwargs)
 
@@ -233,10 +229,8 @@ class ConfigurableWidgetsAdminMixin(object):
 
 class BaseAdminMixin(object):
     def _display_image(self, img_field, width=80, height=80, show_link=True):
-        html_tag = (
-            "<img src='{img_field.url}' width='{width}' heigth='{height}' />".format(
-                img_field=img_field, width=width, height=height
-            )
+        html_tag = "<img src='{img_field.url}' width='{width}' heigth='{height}' />".format(
+            img_field=img_field, width=width, height=height
         )
         if show_link:
             html_tag = "<a href='{img_field.url}' target='_blank'>{img_tag}</a>".format(
@@ -245,9 +239,7 @@ class BaseAdminMixin(object):
         return html_tag
 
     def _display_datetime(self, datetime_field):
-        return formats.date_format(
-            localtime(datetime_field, get_current_timezone()), "SHORT_DATETIME_FORMAT"
-        )
+        return formats.date_format(localtime(datetime_field, get_current_timezone()), "SHORT_DATETIME_FORMAT")
 
     def _display_date(self, date_field):
         return formats.date_format(date_field, "SHORT_DATE_FORMAT")
@@ -278,9 +270,7 @@ class BaseAdminMixin(object):
                 return "-"
             display_user.short_description = _("User")
         """
-        return '<a href="{0}" target="_blank">{1}</a>' "".format(
-            fk_field.admin_change_url, fk_field
-        )
+        return '<a href="{0}" target="_blank">{1}</a>' "".format(fk_field.admin_change_url, fk_field)
 
     def _display_m2m_objects(self, obj, m2m_field_name, label="elements"):
         """
@@ -304,9 +294,7 @@ class BaseAdminMixin(object):
         """
         return self._display_related_objects(obj, m2m_field_name, label)
 
-    def _display_related_objects(
-        self, obj, related_field_name, label="elements", show_generic_link=True
-    ):
+    def _display_related_objects(self, obj, related_field_name, label="elements", show_generic_link=True):
         """
         Use this method in your admin to display your 1..N or N..N objects (from related model) filtered changelist's link.
         set show_generic_link to false to show a list of all related objects links
@@ -338,23 +326,18 @@ class BaseAdminMixin(object):
             related_name = related_manager.field.name
         related_model = related_manager.model
         if show_generic_link:
-            url = "{}?{}__id__exact={}".format(
-                related_model.admin_changelist_url(), related_name, obj.id
-            )
+            url = "{}?{}__id__exact={}".format(related_model.admin_changelist_url(), related_name, obj.pk)
             elements_count = related_manager.count()
-            return (
-                '<a href="{url}" target="_blank">Display {elements_count} {label}</a>'
-                "".format(url=url, elements_count=elements_count, label=label)
+            return '<a href="{url}" target="_blank">Display {elements_count} {label}</a>' "".format(
+                url=url, elements_count=elements_count, label=label
             )
         else:
             return "<br>".join(
-                f"""<a href='{reverse_lazy(f"admin:{related_obj._meta.app_label}_{related_obj._meta.model_name}_change", kwargs={"object_id": related_obj.id})}' target='_blank'>{related_obj.__str__()}</a>"""
+                f"""<a href='{reverse_lazy(f"admin:{related_obj._meta.app_label}_{related_obj._meta.model_name}_change", kwargs={"object_id": related_obj.pk})}' target='_blank'>{related_obj.__str__()}</a>"""
                 for related_obj in related_manager.all()
             )
 
-    def _display_generic_related_objects(
-        self, obj, related_field_name, label="elements"
-    ):
+    def _display_generic_related_objects(self, obj, related_field_name, label="elements"):
         """
         Use this method in your admin to display your 1..N or N..N objects (from related model) filtered changelist's link.
 
@@ -396,9 +379,8 @@ class BaseAdminMixin(object):
             obj.id,
         )
         elements_count = related_manager.count()
-        return (
-            '<a href="{url}" target="_blank">Display {elements_count} {label}</a>'
-            "".format(url=url, elements_count=elements_count, label=label)
+        return '<a href="{url}" target="_blank">Display {elements_count} {label}</a>' "".format(
+            url=url, elements_count=elements_count, label=label
         )
 
     def _display_related_objects_repr(
@@ -430,6 +412,4 @@ class BaseAdminMixin(object):
             display_devices.short_description = _("Devices")
         """
         related_manager = getattr(obj, related_field_name)
-        return separator.join(
-            related_obj.__repr__() for related_obj in related_manager.all()
-        )
+        return separator.join(related_obj.__repr__() for related_obj in related_manager.all())
