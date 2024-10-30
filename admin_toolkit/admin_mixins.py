@@ -339,7 +339,7 @@ class BaseAdminMixin(object):
         related_model = related_manager.model
         if show_generic_link:
             url = "{}?{}__id__exact={}".format(
-                related_model.admin_changelist_url(), related_name, obj.id
+                related_model.admin_changelist_url(), related_name, obj.pk
             )
             elements_count = related_manager.count()
             return (
@@ -348,7 +348,7 @@ class BaseAdminMixin(object):
             )
         else:
             return "<br>".join(
-                f"""<a href='{reverse_lazy(f"admin:{related_obj._meta.app_label}_{related_obj._meta.model_name}_change", kwargs={"object_id": related_obj.id})}' target='_blank'>{related_obj.__str__()}</a>"""
+                f"""<a href='{reverse_lazy(f"admin:{related_obj._meta.app_label}_{related_obj._meta.model_name}_change", kwargs={"object_id": related_obj.pk})}' target='_blank'>{related_obj.__str__()}</a>"""
                 for related_obj in related_manager.all()
             )
 
